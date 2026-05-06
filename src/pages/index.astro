@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import CourseCard from "../components/CourseCard.astro";
+import { getCollection } from "astro:content";
+
+const projects = await getCollection("projects");
+const courses = await getCollection("courses");
+const posts = await getCollection("blog");
+const competitions = await getCollection("competitions");
+
+const featuredProjects = projects.filter((p) => p.data.featured);
+---
+
+<BaseLayout>
+  <!-- Hero -->
+  <section class="flex flex-col items-center py-16 text-center sm:py-24">
+    <div class="h-24 w-24 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 sm:h-32 sm:w-32" />
+    <h1 class="mt-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl">
+      Slishy Sun
+    </h1>
+    <p class="mt-4 max-w-2xl text-lg text-gray-600 dark:text-gray-400">
+      复旦大学集成电路领军人才班 · 大一<br/>
+      专注数模混合IC设计，正在探索模拟存算、类脑计算与AI驱动的芯片设计范式。
+    </p>
+    <!-- Stats -->
+    <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">{projects.length}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">项目</p>
+      </div>
+      <div class="rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">{competitions.length}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">竞赛</p>
+      </div>
+      <div class="rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">{courses.length}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">课程</p>
+      </div>
+      <div class="rounded-xl border border-gray-200 dark:border-gray-800 p-4 text-center">
+        <p class="text-2xl font-bold text-gray-900 dark:text-white">{posts.length}</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">文章</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects -->
+  <section class="py-8">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">研究项目</h2>
+    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {featuredProjects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  <!-- Recent Courses -->
+  <section class="py-8">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">课程学习</h2>
+    <div class="mt-6 grid gap-6 sm:grid-cols-2">
+      {courses.slice(0, 4).map((course) => <CourseCard course={course} />)}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CourseCard from "../components/CourseCard.astro";
+import { getCollection } from "astro:content";
+
+const courses = await getCollection("courses");
+---
+
+<BaseLayout title="课程学习" description="Slishy Sun 大学期间自学与修读的核心课程">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">课程学习</h1>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">
+      共自学/修读 {courses.length} 门核心课程，涵盖计算机科学、电子学、信号处理与数学。
+    </p>
+  </header>
+
+  <div class="grid gap-6 sm:grid-cols-2">
+    {courses.map((course) => <CourseCard course={course} />)}
+  </div>
+</BaseLayout>

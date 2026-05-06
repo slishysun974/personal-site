@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Timeline from "../components/Timeline.astro";
+import { getCollection } from "astro:content";
+
+const competitions = await getCollection("competitions");
+competitions.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="竞赛经历" description="Slishy Sun 的数学建模竞赛经历">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">竞赛经历</h1>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">
+      共参加 {competitions.length} 场数学建模竞赛，从美赛到华东杯，在实战中锻炼建模思维。
+    </p>
+  </header>
+
+  <Timeline items={competitions} />
+</BaseLayout>

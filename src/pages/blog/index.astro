@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import TagBadge from "../../components/TagBadge.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="博客" description="孙路的技术博客">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">博客</h1>
+    <p class="mt-2 text-gray-600 dark:text-gray-400">
+      共 {posts.length} 篇文章。记录学习过程中的思考与总结。
+    </p>
+  </header>
+
+  <div class="space-y-6">
+    {posts.map((post) => {
+      const { title, description, date, tags } = post.data;
+      return (
+        <article class="rounded-lg border border-gray-200 dark:border-gray-800 p-6 hover:shadow-lg transition-shadow">
+          <time class="text-xs text-gray-500 dark:text-gray-400">
+            {date.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" })}
+          </time>
+          <h3 class="mt-1 text-lg font-semibold text-gray-900 dark:text-white">
+            <a href={`/blog/${post.id}`} class="no-underline hover:text-blue-600 dark:hover:text-blue-400">
+              {title}
+            </a>
+          </h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{description}</p>
+          {
+            tags && tags.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-1">
+                {tags.map((tag) => <TagBadge label={tag} />)}
+              </div>
+            )
+          }
+        </article>
+      );
+    })}
+  </div>
+</BaseLayout>

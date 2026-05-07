@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>流水线ADC行为级建模与仿真 — Slishy Sun | 个人学术主页</title><meta name="description" content="复现ISSCC论文中的Pipelined ADC架构，使用MATLAB搭建完整的行为级仿真平台，包括采样保持、子ADC、MDAC、数字校正等模块的建模与系统级验证。"><meta property="og:title" content="流水线ADC行为级建模与仿真 — Slishy Sun | 个人学术主页"><meta property="og:description" content="复现ISSCC论文中的Pipelined ADC架构，使用MATLAB搭建完整的行为级仿真平台，包括采样保持、子ADC、MDAC、数字校正等模块的建模与系统级验证。"><meta property="og:type" content="website"><meta property="og:site_name" content="孙路 | 个人学术主页"><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><!-- Blocking script: apply dark class before first paint to avoid flash --><script>
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>12-bit 3GS/s Pipelined ADC 数字后台校准行为级仿真 — Slishy Sun | 个人学术主页</title><meta name="description" content="复现ISSCC 2025论文，使用MATLAB搭建完整的Pipelined ADC行为级模型，实现Gated-LMS PWL后台校准算法，SFDR提升至95.81 dB，ENOB达11.56 bit。"><meta property="og:title" content="12-bit 3GS/s Pipelined ADC 数字后台校准行为级仿真 — Slishy Sun | 个人学术主页"><meta property="og:description" content="复现ISSCC 2025论文，使用MATLAB搭建完整的Pipelined ADC行为级模型，实现Gated-LMS PWL后台校准算法，SFDR提升至95.81 dB，ENOB达11.56 bit。"><meta property="og:type" content="website"><meta property="og:site_name" content="孙路 | 个人学术主页"><meta name="generator" content="Astro v5.18.1"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><!-- Blocking script: apply dark class before first paint to avoid flash --><script>
       (function () {
         const theme = localStorage.getItem("theme");
         if (
@@ -30,38 +30,173 @@ Slishy Sun
 课程
 </a> <a href="/blog" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white no-underline transition-colors">
 博客
-</a> </div> </div> </header> <script type="module">const e=document.getElementById("hamburger"),t=document.getElementById("mobile-menu"),s=document.getElementById("hamburger-icon"),n=document.getElementById("hamburger-close-icon");e?.addEventListener("click",()=>{!t.classList.contains("hidden")?(t.classList.add("hidden"),s?.classList.remove("hidden"),n?.classList.add("hidden"),e.setAttribute("aria-expanded","false"),e.setAttribute("aria-label","打开导航菜单")):(t.classList.remove("hidden"),s?.classList.add("hidden"),n?.classList.remove("hidden"),e.setAttribute("aria-expanded","true"),e.setAttribute("aria-label","关闭导航菜单"))});</script> <main class="flex-1 mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">  <article class="mx-auto max-w-3xl"> <header class="mb-8"> <time class="text-sm text-gray-500 dark:text-gray-400"> 2026年3月1日 </time> <h1 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">流水线ADC行为级建模与仿真</h1> <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">复现ISSCC论文中的Pipelined ADC架构，使用MATLAB搭建完整的行为级仿真平台，包括采样保持、子ADC、MDAC、数字校正等模块的建模与系统级验证。</p> </header> <!-- Metadata --> <div class="mb-8 flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 dark:border-gray-800 p-4 text-sm"> <div> <span class="text-gray-500 dark:text-gray-400">角色：</span> <span class="text-gray-900 dark:text-white">独立完成</span> </div> <div class="flex flex-wrap items-center gap-1"> <span class="text-gray-500 dark:text-gray-400">技术栈：</span> <span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"> MATLAB </span><span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"> Simulink </span><span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"> Signal Processing </span> </div> <div class="flex gap-3"> <a href="https://github.com/slishy-sun/pipelined-adc-modeling" class="text-blue-600 no-underline hover:underline dark:text-blue-400">源代码 →</a>  </div> </div> <!-- Content --> <div class="prose prose-gray dark:prose-invert max-w-none"> <h1 id="流水线adc行为级建模与仿真">流水线ADC行为级建模与仿真</h1>
-<h2 id="项目背景">项目背景</h2>
-<p>大一下学期开始探索数模混合IC方向，选取了一篇ISSCC上关于高速Pipelined ADC的论文作为起点。目标是复现论文中的架构，通过行为级仿真理解ADC的核心设计trade-off。</p>
-<h2 id="技术路线">技术路线</h2>
-<h3 id="系统架构">系统架构</h3>
+</a> </div> </div> </header> <script type="module">const e=document.getElementById("hamburger"),t=document.getElementById("mobile-menu"),s=document.getElementById("hamburger-icon"),n=document.getElementById("hamburger-close-icon");e?.addEventListener("click",()=>{!t.classList.contains("hidden")?(t.classList.add("hidden"),s?.classList.remove("hidden"),n?.classList.add("hidden"),e.setAttribute("aria-expanded","false"),e.setAttribute("aria-label","打开导航菜单")):(t.classList.remove("hidden"),s?.classList.add("hidden"),n?.classList.remove("hidden"),e.setAttribute("aria-expanded","true"),e.setAttribute("aria-label","关闭导航菜单"))});</script> <main class="flex-1 mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">  <article class="mx-auto max-w-3xl"> <header class="mb-8"> <time class="text-sm text-gray-500 dark:text-gray-400"> 2026年5月7日 </time> <h1 class="mt-2 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">12-bit 3GS/s Pipelined ADC 数字后台校准行为级仿真</h1> <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">复现ISSCC 2025论文，使用MATLAB搭建完整的Pipelined ADC行为级模型，实现Gated-LMS PWL后台校准算法，SFDR提升至95.81 dB，ENOB达11.56 bit。</p> </header> <!-- Metadata --> <div class="mb-8 flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 dark:border-gray-800 p-4 text-sm"> <div> <span class="text-gray-500 dark:text-gray-400">角色：</span> <span class="text-gray-900 dark:text-white">独立完成</span> </div> <div class="flex flex-wrap items-center gap-1"> <span class="text-gray-500 dark:text-gray-400">技术栈：</span> <span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"> MATLAB </span><span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"> 信号处理 </span><span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300"> 数值分析 </span> </div> <div class="flex gap-3"> <a href="https://github.com/slishysun974/pipelined-adc-modeling" class="text-blue-600 no-underline hover:underline dark:text-blue-400">源代码 →</a>  </div> </div> <!-- Content --> <div class="prose prose-gray dark:prose-invert max-w-none"> <h1 id="12-bit-3-gss-pipelined-adc-数字后台校准行为级仿真">12-bit 3-GS/s Pipelined ADC 数字后台校准行为级仿真</h1>
+<blockquote>
+<p>复现论文：M. Gu et al., “A 12b 3GS/s Pipelined ADC with Gated-LMS-Based Piecewise-Linear Nonlinearity Calibration,” ISSCC 2025, #24.1</p>
+</blockquote>
+<h2 id="研究概述">研究概述</h2>
+<p>本工作历时约两周（4月27日—5月5日），在MATLAB中搭建了完整的12-bit 3-GS/s Pipelined ADC行为级模型，并复现了论文中的Gated-LMS PWL（分段线性）后台数字校准算法。按四个阶段逐步推进，从论文研读到最终参数优化。</p>
+<hr>
+<h2 id="系统架构">系统架构</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>Stage 1                  Stage 2                  Stage 3 (Backend)</span></span>
+<span class="line"><span>3b Flash + 8-level CDAC  3b Flash + 8-level CDAC  8b TI-SAR (4通道时分交织)</span></span>
+<span class="line"><span>   ↓ G=4 open-loop RA        ↓ G=4 open-loop RA</span></span>
+<span class="line"><span>   ↓ 1b redundancy           ↓ 1b redundancy</span></span></code></pre>
 <ul>
-<li>10-bit, 100MS/s Pipelined ADC</li>
-<li>1.5-bit/stage 流水线结构</li>
-<li>数字冗余校正（Digital Redundancy Correction）</li>
+<li><strong>分辨力</strong>：12 bit（2+2+8）</li>
+<li><strong>采样率</strong>：3 GS/s</li>
+<li><strong>残量放大器</strong>：open-loop gm-R（模型中用tanh软饱和描述）</li>
+<li><strong>校准方式</strong>：1-bit伪随机dither注入 + Gated-LMS PWL后台校准</li>
 </ul>
-<h3 id="matlab建模模块">MATLAB建模模块</h3>
+<hr>
+<h2 id="pipelined-adc-基本原理">Pipelined ADC 基本原理</h2>
+<h3 id="为什么需要流水线架构">为什么需要流水线架构</h3>
+<p>高速高精度ADC面临速度与精度的根本矛盾。Flash ADC可在单周期完成转换但每增加1bit分辨力比较器翻倍；SAR ADC硬件极简但串行比较速度受限。</p>
+<p><strong>流水线方案</strong>：将N-bit转换任务拆成多级，每级做M-bit粗量化后把”量化残差”放大交给下级。各级间用采样保持隔开，让各级同时处理不同采样点——就像工厂流水线。</p>
+<h3 id="1-bit冗余的巧妙设计">1-bit冗余的巧妙设计</h3>
+<p>Stage 1使用3-bit Flash但名义上只贡献2 bit。额外1 bit是冗余——当比较器因失调或噪声做出错误决策时，只要残差仍落在冗余区域内，下级即可纠正。这正是数字校正技术的精髓：用数字域的余量放松模拟电路的设计要求。</p>
+<hr>
+<h2 id="非理想因素建模">非理想因素建模</h2>
+<h3 id="残量放大器非线性压缩">残量放大器非线性压缩</h3>
+<p>Open-loop gm-R放大器没有负反馈来线性化传输特性。当输入信号偏离零点时，跨导gm下降，呈现”软饱和”。使用tanh模型描述：</p>
+<p>$$V_{out} = A \cdot G \cdot V_0 \cdot \tanh(V_{res}/V_0)$$</p>
+<p>tanh的Taylor展开三次项天然为负（压缩），且在大信号下有物理自然的饱和上限，不会像多项式在信号稍大时发散。当α₃ = −0.10时，残差边界处的局部增益仅压缩约5%，对应pre-cal THD ≈ −63 dB。</p>
+<h3 id="级间增益误差aerr">级间增益误差（Aerr）</h3>
+<p>放大器实际增益偏离名义值4——仅0.2%的偏差。这看似不起眼，却是隐藏的最大单一限制项。原因是级间增益误差在两级流水线中通过重建系数128放大——Stage 1的一个LSB对应Stage 2 backend的128个code，0.2%的增益误差经此放大后产生不可忽略的非线性。实验证实：仅这一项就把SFDR从98 dB砸到80 dB。</p>
+<h3 id="比较器失调与噪声">比较器失调与噪声</h3>
+<p>晶体管随机掺杂波动导致每对差分对阈值偏离设计值。5 mV标准差（28nm CMOS典型值）的独立失调分配在7个比较器上。比较器失调的作用不是纯粹加噪声——它让某些样本”误入”相邻比较器的阈值区间，把残差推到冗余区域，这也为PWL外侧slice提供LMS训练样本。</p>
+<h3 id="timing-skew">Timing Skew</h3>
+<p>在3 GS/s采样率下时钟周期仅333 ps。Flash比较器锁存Vin的时刻与CDAC开关电容实际采样的时刻之间存在5–10 ps的skew。时序失配在残差上叠加与输入信号导数成正比的扰动，输入频率越高影响越大。</p>
+<hr>
+<h2 id="gated-lms-pwl-后台校准">Gated-LMS PWL 后台校准</h2>
+<h3 id="pwl分段思想">PWL分段思想</h3>
+<p>将backend观察量按绝对值划分为4段，每段配独立斜率系数ki：</p>
+<ul>
+<li><strong>Slice 1</strong>：0 ≤ |Dbe| &#x3C; b₀ — 中心区域，跟踪整体增益</li>
+<li><strong>Slice 2</strong>：b₀ ≤ |Dbe| &#x3C; b₀+b₁ — 过渡区</li>
+<li><strong>Slice 3</strong>：b₁ ≤ |Dbe| &#x3C; b₁+b₂ — 非线性补偿</li>
+<li><strong>Slice 4</strong>：|Dbe| ≥ b₁+b₂ — 大信号饱和修正</li>
+</ul>
+<p>其中b₀ = 128 codes（用backend幅度码的2-MSB硬件分片）。</p>
+<h3 id="lms更新机制">LMS更新机制</h3>
+<p>核心公式：kᵢ ← kᵢ − μ · e · sign(Dd)</p>
+<p>dither注入在残差节点，在数字域映射为±128 codes（Stage 1）和±32 codes（Stage 2）。误差信号e定义为PWL校正后的backend码值与已知dither分量理论预期值的差。</p>
+<h3 id="门控机制gated-lms">门控机制（Gated-LMS）</h3>
+<p>LMS的更新不是对所有样本无差别进行。对slice i，只有当|e| > b_{i-1}时才更新kᵢ——让slice 1的样本去更新k₃只会注入噪声。门控用|e|而非|Dbe|是自洽选择：|e|同时编码信号幅度和当前PWL离正确解的距离，在LMS不动点附近自然沿bi分层。</p>
+<p>阈值bi随k收敛自适应调整：bᵢ = b₀ · Σkⱼ。假设k₁=1.003、k₂=1.010、k₃=1.028、b₀=128，则b₁=128.4、b₂=257.7、b₃=389.2。</p>
+<h3 id="级联校准">级联校准</h3>
+<p>Stage 1的LMS观察器不使用原始backend输出，而是使用已经过Stage 2 PWL校正并去除dither后的净信号。这消除了跨级耦合——Stage 2的残余非线性不会污染Stage 1的LMS梯度。</p>
+<h3 id="μ衰减策略">μ衰减策略</h3>
+<p>前50%训练样本用大步长（μ=1×10⁻⁷）快速收敛，后50%用衰减步长（μ=1×10⁻⁸）锁定稳态精度。</p>
+<hr>
+<h2 id="校准效果">校准效果</h2>
+<p><strong>v6冠军版（α₃=−0.10, dither=1/8, 5M训练样本，120 MHz近DC输入）：</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>指标</th><th>Pre-cal</th><th>Post-cal</th><th>提升</th></tr></thead><tbody><tr><td>SNDR</td><td>56.05 dB</td><td><strong>71.36 dB</strong></td><td>+15.31 dB</td></tr><tr><td>SFDR</td><td>68.63 dB</td><td><strong>95.81 dB</strong></td><td>+27.19 dB</td></tr><tr><td>SNR</td><td>57.06 dB</td><td>71.70 dB</td><td>+14.64 dB</td></tr><tr><td>THD</td><td>−62.88 dB</td><td><strong>−82.66 dB</strong></td><td>−19.77 dB</td></tr><tr><td>ENOB</td><td>9.02 bit</td><td><strong>11.56 bit</strong></td><td>+2.54 bit</td></tr></tbody></table>
+<p>SFDR离12-bit理想极限98 dB仅2.2 dB，ENOB达11.56 bit——接近分辨力上限。</p>
+<h3 id="核心发现">核心发现</h3>
+<p>将dither幅度从Vfs/(G·16)加大到Vfs/(G·8)是决定性优化。dither不是简单的加性噪声——它是LMS的”参考信号”。增大dither虽让pre-cal SNDR恶化，但LMS的相关SNR翻倍后k系数更准，post-cal SFDR飙升至95.81 dB。</p>
+<hr>
+<h2 id="timing-skew-与-pwl-slice-4-训练">Timing Skew 与 PWL Slice 4 训练</h2>
+<p>论文§II.C指出”考虑到timing skew等非理想，残差电压摆幅增加到±100 mV”。我们构造了显式timing-skew模型：Vres ≈ ideal_Vres + Δt · dVin/dt（一阶线性化）。</p>
+<h3 id="skew扫描结果b128论文值">Skew扫描结果（b₀=128，论文值）</h3>
+<p>| T_skew (ps) | |e₁|_max (codes) | hits_s1_4 | SNDR_post (dB) |
+|-------------|----------------|------------|----------------|
+| 0 | 281 | 0 | 68.53 |
+| 8 | 391 | 43 | 67.80 |
+| 12 | 448 | 4,200 | 67.04 |
+| 20 | 551 | 63,000 | 57.15 ❌ |</p>
+<p>保持论文b₀=128，T_skew需≥12 ps才能让slice 4有显著训练，但此时SNDR已跌至67 dB以下。</p>
+<h3 id="最终折中方案t_skew5-ps--b0_scale07">最终折中方案（T_skew=5 ps + B0_SCALE=0.7）</h3>
+<p>在5 ps现实工艺skew + 小幅b₀调整（90 codes）下，4个PWL切片全部进入正常训练区：</p>
+<ul>
+<li>k_s1 = [1.000, 1.005, 1.014, 1.028] 单调递增 ✓</li>
+<li>SNDR_post = 68.19 dB, ENOB = 11.03 bit</li>
+</ul>
+<hr>
+<h2 id="已积累的核心认知">已积累的核心认知</h2>
 <ol>
-<li><strong>采样保持电路（S/H）</strong> — 考虑有限带宽、时钟抖动、kT/C噪声</li>
-<li><strong>子ADC（Sub-ADC）</strong> — Flash架构，含比较器失调建模</li>
-<li><strong>余量放大器（MDAC）</strong> — 有限增益、电容失配的建模</li>
-<li><strong>数字校正逻辑</strong> — 1.5-bit冗余位的数字域对齐与合成</li>
+<li><strong>dither是LMS的参考信号而非单纯噪声</strong>——增大dither让LMS更准</li>
+<li><strong>|e|门控是PWL-LMS的自洽选择</strong>——任何改用|Dbe|的尝试都会导致发散</li>
+<li><strong>0.2%级间增益误差足以毁掉18 dB SFDR</strong>——行为级仿真中最易被忽视的瓶颈</li>
+<li><strong>Timing skew对残量摆幅的影响是样本级均匀的</strong>——与比较器offset的机制完全不同</li>
+<li><strong>两阶段训练（先S2后联合）与全程联合训练最终不动点一致</strong>——但前者调试更清晰</li>
 </ol>
-<h3 id="非理想效应建模">非理想效应建模</h3>
-<ul>
-<li>电容失配（Capacitor Mismatch）</li>
-<li>有限运放增益（Finite Op-amp Gain）</li>
-<li>比较器失调电压（Comparator Offset）</li>
-<li>时钟抖动（Clock Jitter）</li>
-<li>热噪声（Thermal Noise）</li>
-</ul>
-<h2 id="仿真结果">仿真结果</h2>
-<ul>
-<li>理想情况下 SNR = 61.8dB，ENOB = 9.97 bit</li>
-<li>引入非理想效应后 SNR ≈ 55dB，ENOB ≈ 8.8 bit</li>
-<li>通过FFT分析验证频谱纯度，SFDR > 65dB</li>
-</ul>
-<h2 id="收获">收获</h2>
-<p>这是第一次接触大规模MATLAB系统级建模。最大的收获是理解了ADC设计中最核心的矛盾——速度、精度、功耗之间的trade-off，以及数字校正技术如何放松模拟电路的设计要求。</p> </div> </article>  </main> <footer class="border-t border-gray-200 dark:border-gray-800 py-8 mt-auto"> <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8"> <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-between"> <!-- Copyright --> <p class="text-sm text-gray-500 dark:text-gray-400">
+<hr>
+<h2 id="后续计划">后续计划</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>优先级</th><th>方向</th><th>预期效果</th></tr></thead><tbody><tr><td>★1</td><td>Nyquist输入测量 (fin≈1.45 GHz)</td><td>让timing-skew研究中的k₄训练成果真正反映在SNDR上</td></tr><tr><td>★2</td><td>N_TRAIN从5e6推到1e7</td><td>hit率2%的Stage 1 slice 4充分收敛</td></tr><tr><td>★3</td><td>输入端2-bit线性化dither</td><td>与timing-skew互补，残差谱更均匀</td></tr><tr><td>★4</td><td>PVT corner扫描（−40/27/85°C）</td><td>重现论文Fig.25的温度电压曲线</td></tr></tbody></table>
+<hr>
+<h2 id="总结">总结</h2>
+<p>两周内完成从零到一的完整复现：搭建12-bit 3-GS/s Pipelined ADC行为级模型，实现Gated-LMS PWL校准算法并达到71.36 dB SNDR（ENOB=11.56 bit），SFDR提升至95.81 dB。通过三组消融实验定位性能瓶颈，显式建模timing skew对PWL切片训练的影响并找到物理合理的折中配置。</p> </div> </article>  </main> <footer class="border-t border-gray-200 dark:border-gray-800 py-8 mt-auto"> <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8"> <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-between"> <!-- Copyright --> <p class="text-sm text-gray-500 dark:text-gray-400">
 &copy; 2026 Slishy Sun &mdash; 使用 <a href="https://astro.build" class="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-300">Astro</a> 构建
 </p> <!-- Social links --> <div class="flex items-center gap-4"> <a href="https://github.com/slishy-sun" class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" target="_blank" rel="noopener noreferrer" aria-label="GitHub"> <svg class="h-5 w-5 inline-block" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"> <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path> </svg> <span class="ml-1">GitHub</span> </a> </div> </div> </div> </footer> <div id="music-player" class="fixed bottom-6 right-6 z-50" data-astro-cid-nuxxkkcb> <button id="music-toggle" class="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 shadow-lg backdrop-blur ring-1 ring-gray-200 transition-all hover:scale-110 hover:shadow-xl dark:bg-gray-800/80 dark:ring-gray-700" aria-label="音乐播放/暂停" title="点击播放背景音乐" data-astro-cid-nuxxkkcb> <!-- 静音图标 --> <svg id="music-icon-off" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" data-astro-cid-nuxxkkcb> <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" data-astro-cid-nuxxkkcb></path> <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" data-astro-cid-nuxxkkcb></path> </svg> <!-- 播放图标 --> <svg id="music-icon-on" class="hidden h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" data-astro-cid-nuxxkkcb> <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" data-astro-cid-nuxxkkcb></path> <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9" data-astro-cid-nuxxkkcb></path> </svg> </button> </div> <!-- 音频元素 --> <audio id="bgm" loop preload="auto" data-astro-cid-nuxxkkcb> <source src="/music/Futurer.mp3" type="audio/mpeg" data-astro-cid-nuxxkkcb> </audio>  <script type="module">const t=document.getElementById("bgm"),n=document.getElementById("music-player"),s=document.getElementById("music-toggle"),l=document.getElementById("music-icon-on"),i=document.getElementById("music-icon-off");let e=!1;function c(){e?(n.classList.add("playing"),l.classList.remove("hidden"),i.classList.add("hidden"),s.setAttribute("title","静音")):(n.classList.remove("playing"),l.classList.add("hidden"),i.classList.remove("hidden"),s.setAttribute("title","播放背景音乐"))}s.addEventListener("click",()=>{e?(t.pause(),e=!1):t.play().then(()=>{e=!0,localStorage.setItem("bgm-playing","true")}).catch(()=>{}),c()});const a=localStorage.getItem("bgm-playing");a==="true"&&(t.volume=.3,t.play().then(()=>{e=!0,c()}).catch(()=>{}));t.volume=.3;</script> </body></html>
